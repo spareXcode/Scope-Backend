@@ -20,7 +20,15 @@ const sql=require('mssql')
    password:'sadfs324@#$sdf',
    options: {
     trustedConnection:true,
-    trustServerCertificate:true
-   }
+    trustServerCertificate:true,
+    encrypt:true
+   },
 
+   connectionTimeout: 30000, // Set a higher timeout value (e.g., 30 seconds)
+   requestTimeout: 30000,
+   pool: {
+    max: 100, // Set max pool size to 50
+    min: 0,  // Minimum number of connections
+    idleTimeoutMillis: 30000 // Time (in ms) before a connection is considered idle and can be closed
+}
  }

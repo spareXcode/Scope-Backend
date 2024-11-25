@@ -25,7 +25,7 @@ module.exports={
     getAllPartNotInMaster:async function(req,res){
         try{
             const result= await dashboardService.getPartNotInMaster(req.body);
-
+            console.log("data ",result)
             res.status(200).json({data:result})
         }
         catch(error){

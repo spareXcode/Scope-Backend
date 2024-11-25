@@ -70,15 +70,12 @@ module.exports={
             console.log("result loc",result.recordset);
             const pendingRequests=[]
             for(let res of result.recordset){
-
+                var pool=await sql.connect(config)
                 locationId=res.LocationID
                 const query1 = `
-            DECLARE @sql NVARCHAR(MAX);
-            SET @sql = N'SELECT COUNT(Current_status) as current_status_count 
-                        FROM CreateOrderRequestPending_TD001_' + @dealerId 
-                        + ' WHERE LocationID = @locationId AND Current_status = ''Pending''';
-            EXEC sp_executesql @sql, N'@dealerId INT, @locationId INT', @dealerId, @locationId;
-        `;
+            SELECT COUNT(Current_status) as current_status_count 
+                        FROM CreateOrderRequestPending_TD001_${dealerId} 
+                        WHERE LocationID = @locationId AND Current_status = 'Pending'`
                 const result=await pool.request()
                 .input('dealerId',dealerId)
                 .input('locationId',locationId)
@@ -155,14 +152,13 @@ module.exports={
             console.log("result loc",result.recordset);
             const rejectedRequests=[]
             for(let res of result.recordset){
+                var pool=await sql.connect(config)
 
                 locationId=res.LocationID
                 const query1 = `
-            DECLARE @sql NVARCHAR(MAX);
-            SET @sql = N'SELECT COUNT(Current_status) as current_status_count 
-                        FROM Create_Order_Request_TD001_' + @dealerId 
-                        + ' WHERE LocationID = @locationId AND Current_status = ''Decline''';
-            EXEC sp_executesql @sql, N'@dealerId INT, @locationId INT', @dealerId, @locationId;
+            SELECT COUNT(Current_status) as current_status_count
+                        FROM Create_Order_Request_TD001_${dealerId}
+                    WHERE LocationID = @locationId AND Current_status = 'Decline'
         `;
                 const result=await pool.request()
                 .input('dealerId',dealerId)
@@ -239,14 +235,13 @@ module.exports={
             console.log("result loc",result.recordset);
             const approvedRequests=[]
             for(let res of result.recordset){
-
+                var pool=await sql.connect(config)
                 locationId=res.LocationID
                 const query1 = `
-            DECLARE @sql NVARCHAR(MAX);
-            SET @sql = N'SELECT Count(Current_status) as current_status_count 
-                        FROM Create_Order_Request_TD001_' + @dealerId 
-                        + ' WHERE LocationID = @locationId AND Current_status = ''Approve''';
-            EXEC sp_executesql @sql, N'@dealerId INT, @locationId INT', @dealerId, @locationId;
+           SELECT Count(Current_status) as current_status_count 
+                        FROM Create_Order_Request_TD001_${dealerId} 
+                        WHERE LocationID = @locationId AND Current_status='Approve'
+            
         `;
                 const result=await pool.request()
                 .input('dealerId',dealerId)
@@ -376,7 +371,7 @@ module.exports={
 
         try{
             var pool=await sql.connect(config);
-            var transaction=new sql.Transaction();
+            var transaction= await new sql.Transaction(pool);
             await transaction.begin();
             new sql.Request(transaction)
             dealerId=req.dealer_id;
@@ -384,24 +379,28 @@ module.exports={
             const query=`SELECT LocationID from LocationInfo where DealerID=@dealerId`
 
             const result=await pool.request()
-            .input('dealerId',dealerId)
+            .input('dealerId',sql.Int,dealerId)
             .query(query);
             console.log("result loc",result.recordset);
             const partNotInMasterData=[]
             
             for(let id of result.recordset){
+                var pool=await sql.connect(config);
                 console.log("id ",id);
                 locationId=id.LocationID
                 // console.log("location ",locationId);
                 
+                // const query = `
+                // DECLARE @sql NVARCHAR(MAX);
+                // SET @sql = N'SELECT COUNT(Yellow_line) as yellow_line_count FROM Create_Order_Request_TD001_${dealerId} WHERE LocationID = @locationId and Yellow_line=1';
+                // EXEC sp_executesql @sql, N'@locationId INT', @locationId ;
+                // `;
                 const query = `
-                DECLARE @sql NVARCHAR(MAX);
-                SET @sql = N'SELECT COUNT(Yellow_line) as yellow_line_count FROM Create_Order_Request_TD001_${dealerId} WHERE LocationID = @locationId and Yellow_line=1';
-                EXEC sp_executesql @sql, N'@locationId INT', @locationId ;
+                SELECT COUNT(Yellow_line) as yellow_line_count FROM Create_Order_Request_TD001_${dealerId} WHERE LocationID = @locationId and Yellow_line=1;
                 `;
                 const result1=await pool.request()
-                .input('locationId',locationId)
-                // .input('dealerId',dealerId)
+                .input('locationId',sql.Int,locationId)
+                 .input('dealerId',sql.Int,dealerId)
                 .query(query);
                 partNotInMasterData.push(result1.recordset);
                 console.log("result ",result1.recordset)
@@ -413,6 +412,9 @@ module.exports={
         catch(error){
             console.log("error ",error)
             await transaction.rollback();
+        }
+        finally{
+            await pool.close()
         }
         
     
