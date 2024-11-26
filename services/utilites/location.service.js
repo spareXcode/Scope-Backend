@@ -43,20 +43,18 @@ module.exports={
           const pool = await sql.connect(config);
     console.log('Connected to the database successfully!');
     // Begin a transaction for inserting data
-    const transaction = new sql.Transaction();
+    const transaction = new sql.Transaction(pool);
     await transaction.begin();
     dealer_id=req.dealer_id;
     const request = new sql.Request(transaction);
-    const query = `
-       Select LocationID,Location from LocationInfo where dealerID=@dealer_id
-      `;
+    const query = 'Select LocationID,Location from LocationInfo where dealerID=@dealer_id';
 
       // Execute the insert query for each row
      const result= await pool.request()
      .input('dealer_id',dealer_id)
         .query(query);
     
-        console.log("result ",result.recordset)
+        console.log("result _____________________________",result.recordset)
     // Commit the transaction
     await transaction.commit();
     console.log('Data fetched successfully.');

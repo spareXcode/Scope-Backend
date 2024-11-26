@@ -4,7 +4,7 @@ const dashboardController=require('../../controller/dashboard/dashboard.controll
 
 // spm dashbaord route
 router.get('/order-type',dashboardController.getOrderType);
-router.get('/approved-by',dashboardController.getApprovedBy);
+router.post('/approved-by',dashboardController.getApprovedBy);
 router.post('/part-not-in-master',dashboardController.getAllPartNotInMaster)
 router.post('/pending-request',dashboardController.getPendingRequest)
 router.post('/approved-request',dashboardController.getApprovedRequest)
@@ -13,7 +13,7 @@ router.post('/rejected-request',dashboardController.getRejectedRequest)
 router.get('/rejected-request-loc',dashboardController.getRejectedRequestBasedOnSelectedLocation)
 router.get('/part-not-in-master-loc',dashboardController.getPartNotInMasterBasedOnLocation)
 router.get('/pending-request-loc',dashboardController.getPendingRequestBasedOnLocations)
-router.get('/locations',dashboardController.getLocationsBasedOnDealer)
+router.post('/locations',dashboardController.getLocationsBasedOnDealer)
 router.post('/stock-uploaded-date',dashboardController.getStockUploadOn)
 module.exports=router;
 

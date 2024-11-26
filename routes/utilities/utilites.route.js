@@ -12,6 +12,6 @@ const locationController=require('../../controller/utilites/location.controller'
  * 
  */
 router.get('/brands',brandController.getBrands)
-router.get('/dealers',dealerController.getDealers)
-router.get('/locations',locationController.getLocations)
+router.post('/dealers',dealerController.getDealers)
+router.post('/locations',locationController.getLocations)
 module.exports=router;

@@ -36,13 +36,13 @@ module.exports={
             locationId=req.location_id;
             const query1=`SELECT DealerID from LocationInfo where LocationID=@locationId`;
             const result1=await pool.request()
-            .input('locationId',locationId).query(query)
+            .input('locationId',locationId).query(query1)
             dealerId=result1.recordset.DealerID;
 
-            const query=`SELECT a.vcFirstName,a.vcLastName from AdminMaster_GEN a LEFTJOIN CreateOrderRequest_TD001_${dealerId} c ON a.bintId_Pk=c.SCSby where LocationID=@LocationId`;
+            const query=`SELECT a.vcFirstName,a.vcLastName from AdminMaster_GEN a LEFT JOIN CreateOrderRequest_TD001_${dealerId} c ON a.bintId_Pk=c.SCSby where LocationID=@LocationId`;
             const result=await pool.request()
-            .input('dealerId',dealerId).query(query);
-
+            .input('dealerId',dealerId)
+            .input('locationId',dealerId).query(query);
             await transaction.commit();
             return result;
 
