@@ -3,7 +3,6 @@ const router=express();
 const dashboardController=require('../../controller/dashboard/dashboard.controller')
 
 // spm dashbaord route
-router.get('/order-type',dashboardController.getOrderType);
 router.post('/approved-by',dashboardController.getApprovedBy);
 router.post('/part-not-in-master',dashboardController.getAllPartNotInMaster)
 router.post('/pending-request',dashboardController.getPendingRequest)
@@ -15,9 +14,11 @@ router.get('/part-not-in-master-loc',dashboardController.getPartNotInMasterBased
 router.get('/pending-request-loc',dashboardController.getPendingRequestBasedOnLocations)
 router.post('/locations',dashboardController.getLocationsBasedOnDealer)
 router.post('/stock-uploaded-date',dashboardController.getStockUploadOn)
+
+router.post('/fetch-data-locations',dashboardController.getAllInfoBasedOnLocations)
+
+//admin dashboard route
+
+ router.post('/fetch-data',dashboardController.getAllInfoBasedAdminDashboard)
+// router.get('/:brandId/:dealerId',dashboardController.getAllInfoBasedOnDealer)
 module.exports=router;
-
-
-//admin dashboard
-
-router.get('/:brandId',dashboardController.getAllInfoBasedOnBrand)

@@ -4,9 +4,7 @@ module.exports={
     uploadFile:async function(req,res) {
         
         try{
-
-        const filePath = req.file.path;
-        
+        const filePath = req.file.path;  
         // Call service to process the uploaded Excel file
         const result = await stockUploadService.readExcelFile(filePath);
            

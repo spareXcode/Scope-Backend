@@ -140,10 +140,21 @@ module.exports={
         }
     },
 
-    getAllInfoBasedOnBrand:async function (req,res) {
+    getAllInfoBasedAdminDashboard:async function (req,res) {
         try{
-            const result=await dashboardService.getAllInfoBasedOnBrand(req);
+            const result=await dashboardService.getAllInfoBasedAdminDashboard(req.body);
+            
             res.status(200).json({data:result})
+        }catch(error){
+            res.status(201).json({error:'Not fetched Successfully ....'})
+        }
+    },
+
+    getAllInfoBasedOnLocations:async function(req,res){
+        try{
+            const result=await dashboardService.getAllInfoBasedOnLocations(req.body)
+            res.status(200).json({data:result})
+            console.log("_______________________",result)
         }catch(error){
             res.status(201).json({error:'Not fetched Successfully'})
         }

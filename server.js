@@ -47,6 +47,6 @@ const port = parseInt(process.env.PORT,10);
 app.use('/api', routes);
 
 
-app.listen(port,'0.0.0.0', () => {
+app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
