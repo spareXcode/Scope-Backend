@@ -11,7 +11,7 @@ module.exports={
   
       // Prepare the SQL query for inserting data into SIMS_STOCK_FILE
       brand_id=req.brand_id;
-      const request = new sql.Request(transaction);
+      await new sql.Request(transaction);
       const query = `
          Select bigid,vcName from Dealer_Master where BrandID=@brand_id;
         `;

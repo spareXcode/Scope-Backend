@@ -7,7 +7,7 @@ module.exports={
 
         try{
             var pool=await sql.connect(config);
-            var transaction=new sql.Transaction();
+            var transaction= await new sql.Transaction(pool);
             await transaction.begin()
             new sql.Request(transaction);
             brandId=data.brandId
@@ -78,7 +78,7 @@ module.exports={
     getNoOfRequestApproved:async function(req,data) {
         try{
             var pool=await sql.connect(config);
-            var transaction=new sql.Transaction();
+            var transaction=await new sql.Transaction(pool);
             await transaction.begin()
             new sql.Request(transaction);
             brandId=data.brandId
@@ -148,7 +148,7 @@ module.exports={
     getNoOfRequestPending:async function(req,data){
         try{
             var pool=await sql.connect(config);
-            var transaction=new sql.Transaction();
+            var transaction=await new sql.Transaction(pool);
             await transaction.begin()
             new sql.Request(transaction);
             brandId=data.brandId
@@ -218,7 +218,7 @@ module.exports={
     getNoOfRequestRejected:async function(req,data){
         try{
             var pool=await sql.connect(config);
-            var transaction=new sql.Transaction();
+            var transaction=await new sql.Transaction(pool);
             await transaction.begin()
             new sql.Request(transaction);
             brandId=data.brandId

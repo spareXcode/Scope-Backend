@@ -9,7 +9,7 @@ module.exports={
 
             var pool=await sql.connect(config)
     
-            const transaction=new sql.Transaction();
+            const transaction=await new sql.Transaction(pool);
             await transaction.begin();
             new sql.Request(transaction)
             locationId=req.location_id;
@@ -21,7 +21,7 @@ module.exports={
              
             dealerId=result1.recordset[0].DealerID;
             // console.log("dealer id ",dealerId)
-            const query=`SELECT distinct a.vcFirstName,a.vcLastName,a.bintId_Pk from AdminMaster_GEN a LEFT JOIN Create_Order_Request_TD001_${dealerId} c ON a.bintId_Pk=c.SCSby where BrandID=@brandId and a.btStatus=1 and a.type='A'`;
+            const query=`SELECT distinct a.vcFirstName,a.vcLastName,a.bintId_Pk from AdminMaster_GEN a LEFT JOIN Create_Order_Request_TD001_${dealerId} c ON a.bintId_Pk=c.SCSby where LocationID=@locationId and a.btStatus=1 and a.type='A'`;
             const result=await pool.request()
             .input('dealerId',dealerId)
             .input('locationId',locationId).query(query);
@@ -75,7 +75,7 @@ module.exports={
             // console.log("result loc",result.recordset);
             const pendingRequests=[]
             for(let res of result.recordset){
-                await sql.connect(config)
+               pool= await sql.connect(config)
     
                 locationId=res.LocationID
                 let query1 = `
@@ -130,7 +130,7 @@ module.exports={
             const partNotInMasterData=[]
             for(let id of res){
                 console.log("id ",id);
-                let pool=await sql.connect(config);
+                pool=await sql.connect(config);
                 dealerId=id.result.DealerID
                 locationId=id.locationId
                 // console.log("location ",locationId);
@@ -463,7 +463,7 @@ module.exports={
 
         try{
             let pool=await sql.connect(config);
-            let transaction=new sql.Transaction();
+            let transaction=await new sql.Transaction(pool);
             await transaction.begin();
             new sql.Request(transaction)
             dealerId=req.dealer_id;
@@ -507,17 +507,17 @@ SELECT COUNT(Yellow_line) as yellow_line_count FROM Create_Order_Request_TD001_$
                 .query(query);
                 partNotInMasterData.push(result1.recordset[0]);
             }
-            // console.log("result in partnot ",partNotInMasterData)
-            await transaction.commit();
+            console.log("result in partnot ",partNotInMasterData)
+            // await transaction.commit();
             return partNotInMasterData
         }
         catch(error){
             console.log("error ",error)
             await transaction.rollback();
         }
-        finally{
-            await pool.close()
-        }
+        // finally{
+        //     await pool.close()
+        // }
         
     
     },
@@ -572,7 +572,7 @@ SELECT COUNT(Yellow_line) as yellow_line_count FROM Create_Order_Request_TD001_$
         try{
             
             var pool=await sql.connect(config);
-            var transaction=new sql.Transaction();
+            var transaction= await new sql.Transaction();
             await transaction.begin()
             new sql.Request(transaction);
     
